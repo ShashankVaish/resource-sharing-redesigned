@@ -135,6 +135,14 @@ app.post('/post-upload',upload.single('file'),verifytoken,async (req,res)=>{
     }
 
 })
+app.get('/user-post',verifytoken,async (req,res)=>{
+    let data = jwt.verify(req.user,'secret')
+    if(data){
+        let user = await userentry.findOne({_id:data.userid}).populate('post')
+        res.json({post:user.post})
+    }
+
+})
 function verifytoken(req,res,next){
     const token = req.headers['authorization']
     // console.log('middlewae caleed',token)
