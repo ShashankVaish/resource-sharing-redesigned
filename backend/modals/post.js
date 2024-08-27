@@ -4,12 +4,12 @@ const postschema = mongoose.Schema({
     title:String,
     description:String,
     subject:String,
-    user:[{
+    user:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'user'
     }
 
-    ],
+    ,
     pdf:String,
 })
 module.exports = mongoose.model('post',postschema)

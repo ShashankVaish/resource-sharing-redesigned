@@ -121,14 +121,14 @@ app.post('/post-upload',upload.single('file'),verifytoken,async (req,res)=>{
             description,
             subject,
             pdf:req.file.filename,
+            user:data.userid
         
         })
         
         let user = await userentry.findOne({_id:data.userid})
         user.post.push(post._id)
         await user.save()
-        post.user.push(user._id)
-        await post.save()
+        
         res.send({message:'success'})
 
 
