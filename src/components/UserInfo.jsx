@@ -35,10 +35,7 @@ const UserInfo = () => {
         imageload()
 
     })
-    useEffect(() => {
-      imageload()
-      
-    }, [count])
+    
     
    
         const onSubmit = async (data) => {
@@ -50,6 +47,7 @@ const UserInfo = () => {
           axios.post('http://localhost:3000/uploads',formdata)
           .then(res=> console.log(res))
           .catch(err=> console.log(err))
+          imageload()
             
     }
     

@@ -10,6 +10,7 @@ import Home from './components/Home';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import UserInfo from './components/UserInfo';
+import Post from './components/Post';
 function App() {
   
   
@@ -18,6 +19,11 @@ function App() {
     {
       path: "/",
       element: <><Navbar/><Home/></>,
+
+    },
+    {
+      path: "/post",
+      element: <><Navbar/><Post/></>,
 
     },
     {

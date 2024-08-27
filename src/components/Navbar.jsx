@@ -23,7 +23,9 @@ const Navbar = () => {
             <li><NavLink to="/">Home</NavLink></li>
             
             
-            {username ? <li><NavLink to='/userinfo'>{username}</NavLink></li>:<>
+            {username ? <><li><NavLink to='/userinfo'>{username}</NavLink></li>
+            <li><NavLink to ='/post'>Post</NavLink></li></>
+            :<>
             <li><NavLink to="/login">Login</NavLink></li>
             <li><NavLink to="/signup">Signup</NavLink></li>
             </> }

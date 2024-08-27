@@ -12,6 +12,7 @@ const cors = require('cors')
 app.use(cors())
 app.use(bodyparser.json())
 app.use(express.static(path.join(__dirname,'public')))
+const postentry = require('./modals/post')
 const upload = require('./utils/profile-picture')
 
 // mongoose connection
@@ -25,7 +26,7 @@ const userschema = mongoose.Schema({
     post:[
         {
             type:mongoose.Schema.Types.ObjectId,
-            // ref:'post'
+            ref:'post'
         }
     ],
     profilepic:{
@@ -106,6 +107,33 @@ app.post('/register',async (req,res)=>{
     }
     
     
+})
+app.post('/post-upload',upload.single('file'),verifytoken,async (req,res)=>{
+    const {title,description,subject}= req.body
+    const {pdf}=req.file.filename
+    console.log(req.file.filename)
+    // console.log(pdf)
+    let data = jwt.verify(req.user,'secret')
+    console.log(data)
+    if(data){
+        let post = await postentry.create({
+            title,
+            description,
+            subject,
+            pdf:req.file.filename,
+        
+        })
+        
+        let user = await userentry.findOne({_id:data.userid})
+        user.post.push(post._id)
+        await user.save()
+        post.user.push(user._id)
+        await post.save()
+        res.send({message:'success'})
+
+
+    }
+
 })
 function verifytoken(req,res,next){
     const token = req.headers['authorization']
