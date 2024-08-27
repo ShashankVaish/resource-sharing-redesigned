@@ -7,7 +7,8 @@ const UserInfo = () => {
     const {
         register,
         handleSubmit,
-        
+        reset,
+        formState,
         formState: { errors },
       } = useForm()
     const [username, setUsername] = useState('')
@@ -44,12 +45,23 @@ const UserInfo = () => {
           formdata.append('file',data.picture[0])
           formdata.append('token',localStorage.getItem('token'))
 
-          axios.post('http://localhost:3000/uploads',formdata)
-          .then(res=> console.log(res))
+          let result=axios.post('http://localhost:3000/uploads',formdata)
+          result.then((res)=> {
+            console.log(res)
+            imageload()
+          })
           .catch(err=> console.log(err))
-          imageload()
+          
             
     }
+    // useEffect(() => {
+    //   if (formState.isSubmitSuccessful) {
+    //     reset()
+    //   }
+      
+    
+      
+    // }, [formState])
     
     
     

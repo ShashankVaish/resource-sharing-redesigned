@@ -13,7 +13,9 @@ const Post = () => {
     const {
         register,
         handleSubmit,
+        reset,
         watch,
+        formState,
         formState: { errors },
       } = useForm()
     
@@ -31,8 +33,13 @@ const Post = () => {
               }
 
         })
-        console.log(result)
-        loadposts()
+        result.then((res)=>{
+            console.log(res)
+            loadposts()
+        }).catch((err)=>{
+            console.log(err)
+        })
+        
     
       }
       const loadposts = async ()=>{
@@ -46,13 +53,17 @@ const Post = () => {
         let data = await result.json()
         console.log(data.post)
         console.log(data.post.length)
-        for(let i =0;i<data.post.length;i++){
-
-
-            setPosts([...posts,{id:uuidv4(),title:data.post[i].title,desc:data.post[i].description,subject:data.post[i].subject,pdf:data.post[i].pdf}])
+        if(data.post.length>0){
+            setPosts((data.post).reverse())
         }
 
       }
+      useEffect(() => {
+        if (formState.isSubmitSuccessful) {
+          reset()
+        }
+      }, [formState])
+    
       useEffect(() => {
         loadposts()
         
@@ -87,7 +98,7 @@ const Post = () => {
         
         {posts.map((item)=>{
             return(
-                <div className="post-details" key={item.id}>
+                <div className="post-details" key={item._id}>
             <div className="post-item">
                 <strong>Title:</strong>
                 <span id="post-title">{item.title}</span>
@@ -95,7 +106,7 @@ const Post = () => {
             <div className="post-item">
                 <strong>Description:</strong>
                 <p id="post-description">
-                    {item.desc}
+                    {item.description}
                 </p>
             </div>
             <div className="post-item">
@@ -106,6 +117,8 @@ const Post = () => {
                 <strong>PDF Document:</strong>
                 <a href={`http://localhost:3000/images/`+item.pdf} target="_blank" id="pdf-link">View PDF</a>
             </div>
+            <br />
+            <hr />
         </div>
             )
         })}
