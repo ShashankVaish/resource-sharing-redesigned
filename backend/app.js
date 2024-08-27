@@ -31,7 +31,7 @@ const userschema = mongoose.Schema({
     ],
     profilepic:{
         type:String,
-        default:'default.png'
+        default:'default.jpg'
     }
 
 })
@@ -142,6 +142,14 @@ app.get('/user-post',verifytoken,async (req,res)=>{
         res.json({post:user.post})
     }
 
+})
+app.get('/all-post',verifytoken,async (req,res)=>{
+    let data = jwt.verify(req.user,'secret')
+    if(data){
+        let post = await postentry.find()
+        res.json({post})
+    }
+    
 })
 function verifytoken(req,res,next){
     const token = req.headers['authorization']
