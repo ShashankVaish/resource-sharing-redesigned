@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './Home.css'
+import { NavLink } from 'react-router-dom'
 
 const Home = () => {
   const [user, setUser] = useState(false)
@@ -13,11 +14,11 @@ const Home = () => {
     let data = await result.json()
     if(data){
       console.log(data.post)
+      console.log(data)
+      
       setUser(true)
       setAllpost((data.post).reverse())
     }
-    
-    
   }
   useEffect(() => {
     if(localStorage.getItem('token')){
@@ -52,6 +53,10 @@ const Home = () => {
                 <strong>PDF Document:</strong>
                 <a href={`http://localhost:3000/images/`+item.pdf} target="_blank" id="pdf-link">View PDF</a>
             </div>
+            <div className="post-item">
+              <strong>Username</strong>
+              <a> <NavLink to={`/user/`+item.user._id} ><p>{item.user.username}</p></NavLink></a>
+            </div>
             <br />
             <hr />
         </div>
@@ -60,12 +65,7 @@ const Home = () => {
         </div>
     </>
     }
-
-    
-  
-
     </>
   )
 }
-
 export default Home

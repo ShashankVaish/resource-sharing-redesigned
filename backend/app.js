@@ -139,15 +139,16 @@ app.get('/user-post',verifytoken,async (req,res)=>{
     let data = jwt.verify(req.user,'secret')
     if(data){
         let user = await userentry.findOne({_id:data.userid}).populate('post')
-        res.json({post:user.post})
+        res.json({post:user.post,username:user.username})
     }
 
 })
 app.get('/all-post',verifytoken,async (req,res)=>{
     let data = jwt.verify(req.user,'secret')
     if(data){
-        let post = await postentry.find()
-        res.json({post})
+        let post = await postentry.find().populate('user')
+        
+        res.json({post,username:post.user})
     }
     
 })

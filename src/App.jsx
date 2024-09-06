@@ -11,6 +11,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import UserInfo from './components/UserInfo';
 import Post from './components/Post';
+import UserCard from './components/UserCard';
 function App() {
   
   
@@ -21,6 +22,12 @@ function App() {
       element: <><Navbar/><Home/></>,
 
     },
+    {
+      path: "/user/:id",
+      element: <><Navbar/><UserCard/></>,
+
+    },
+    
     {
       path: "/post",
       element: <><Navbar/><Post/></>,

@@ -4,12 +4,13 @@ import axios from 'axios'
 import { useForm } from "react-hook-form"
 import { v4 as uuidv4 } from 'uuid';
 import { useState } from 'react';
+import { set } from 'mongoose';
 // import { splitVendorChunkPlugin } from 'vite';
 const Post = () => {
     
     
     const [posts, setPosts] = useState([])
-    
+    const [postusername, setPostusername] = useState("")
     const {
         register,
         handleSubmit,
@@ -52,6 +53,8 @@ const Post = () => {
         })
         let data = await result.json()
         console.log(data.post)
+        console.log(data.username)
+        setPostusername(data.username)
         console.log(data.post.length)
         if(data.post.length>0){
             setPosts((data.post).reverse())
@@ -116,6 +119,10 @@ const Post = () => {
             <div className="post-item">
                 <strong>PDF Document:</strong>
                 <a href={`http://localhost:3000/images/`+item.pdf} target="_blank" id="pdf-link">View PDF</a>
+            </div>
+            <div className="post-item">
+                <strong>Username</strong>
+                <p className="post-username">{postusername}</p>
             </div>
             <br />
             <hr />
