@@ -11,7 +11,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import UserInfo from './components/UserInfo';
 import Post from './components/Post';
-import UserCard from './components/UserCard';
+import Footer from './components/Footer';
 function App() {
   
   
@@ -19,34 +19,28 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <><Navbar/><Home/></>,
+      element: <><Navbar/><Home/><Footer/></>,
 
     },
-    {
-      path: "/user/:id",
-      element: <><Navbar/><UserCard/></>,
-
-    },
-    
     {
       path: "/post",
-      element: <><Navbar/><Post/></>,
+      element: <><Navbar/><Post/><Footer/></>,
 
     },
     {
       path: "/login",
-      element: <><Navbar/><Login/></>,
+      element: <><Navbar/><Login/><Footer/></>,
 
     },
     {
       path: "/userinfo",
-      element: <><Navbar/><UserInfo/></>,
+      element: <><Navbar/><UserInfo/><Footer/></>,
 
     },
     {
       
       path: "/signup",
-      element: <><Navbar/><Signup/></>,
+      element: <><Navbar/><Signup/><Footer/></>,
 
     },
 

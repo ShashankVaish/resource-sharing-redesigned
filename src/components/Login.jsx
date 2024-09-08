@@ -50,9 +50,7 @@ const Login = () => {
   return (
     <>
     <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="imgcontainer">
-            <img src="img_avatar2.png" alt="Avatar" className="avatar"/>
-        </div>
+        
         <div className="container">
             <label for="uname"><b>email</b></label>
             <input type="email" placeholder="Enter email"  {...register("email")} />
@@ -63,10 +61,7 @@ const Login = () => {
                 <input type="checkbox" checked="checked" name="remember"/> Remember me
             </label>
         </div>
-        <div className="container" >
-            {/* <button type="button" className="cancelbtn">Cancel</button> */}
-            <span className="psw">Forgot <a href="#">password?</a></span>
-        </div>
+        
     </form>
     {userdetail && (
           <Navigate to="/" replace={true} user={user} />
