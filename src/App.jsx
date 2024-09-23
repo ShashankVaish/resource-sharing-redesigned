@@ -11,6 +11,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import UserInfo from './components/UserInfo';
 import Post from './components/Post';
+import Usercard from './components/Usercard'
 import Footer from './components/Footer';
 function App() {
   
@@ -41,6 +42,13 @@ function App() {
       
       path: "/signup",
       element: <><Navbar/><Signup/><Footer/></>,
+
+    },
+    {
+      
+      path: "/user/:id",
+      element:<> <Navbar/><Usercard/><Footer/></>,
+      
 
     },
 

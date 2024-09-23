@@ -9,7 +9,7 @@ const bodyparser = require('body-parser')
 // const userentry = require('./modals/user')
 const app = express()
 const cors = require('cors')
-app.use(cors())
+app.use(cors());
 app.use(bodyparser.json())
 app.use(express.static(path.join(__dirname,'public')))
 const postentry = require('./modals/post')
@@ -56,6 +56,7 @@ app.post('/login',async (req,res)=>{
         }
     });
 })
+
 app.post('/uploads',upload.single('file'), async (req,res)=>{
     console.log(req.body.token)
     console.log(req.file)
@@ -152,8 +153,11 @@ app.get('/all-post',verifytoken,async (req,res)=>{
     }
     
 })
+
+
 function verifytoken(req,res,next){
     const token = req.headers['authorization']
+    
     // console.log('middlewae caleed',token)
     req.user=token
     next()

@@ -1,12 +1,21 @@
 import React from 'react'
 
-const UserCard = () => {
+const Usercard = () => {
+  
+  const fetchdata= async ()=>{
+    const url = window.URL.
+
+  }
+  useEffect(() => {
+    
+  }, [])
+  
   return (
     <>
-    <h1>dw</h1>
-    
+    <div>User-card</div>
+    <h1>hello bro</h1>
     </>
   )
 }
 
-export default UserCard
+export default Usercard
