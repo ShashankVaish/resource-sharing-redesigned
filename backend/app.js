@@ -56,6 +56,19 @@ app.post('/login',async (req,res)=>{
         }
     });
 })
+app.get('/user/:id', async (req, res) => {
+    const {id} = req.params;
+
+    console.log(id)
+    let user = await userentry.findOne({_id: id});
+    if (user) {
+        return res.json(user);
+    }
+
+    console.log(user)
+    res.send({"message": "error"});
+})
+
 
 app.post('/uploads',upload.single('file'), async (req,res)=>{
     console.log(req.body.token)
