@@ -35,7 +35,7 @@ const UserInfo = () => {
         setUsername(localStorage.getItem('loggenduser'))
         imageload()
 
-    })
+    },[count])
     
     
    

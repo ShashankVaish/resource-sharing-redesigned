@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import './Home.css'
 import { NavLink } from 'react-router-dom'
+import { id_userContext } from '../context/context'
+// import { createContext } from 'react'
 
 const Home = () => {
   const [user, setUser] = useState(false)
+  const [userId, setUserId] = useState('')
   const [allpost, setAllpost] = useState([])
   const getpost=async ()=>{
     let result = await fetch('http://localhost:3000/all-post',{
@@ -30,11 +33,14 @@ const Home = () => {
   
   return (
     <>
+    
     {user && <>
+    
     <div className="container">
       {allpost.map((item)=>{
-            return(
+            return(<>
                 <div className="post-details" key={item._id}>
+                  
             <div className="post-item">
                 <strong>Title:</strong>
                 <span id="post-title">{item.title}</span>
@@ -55,17 +61,23 @@ const Home = () => {
             </div>
             <div className="post-item">
               <strong>Username</strong>
-              <a> <NavLink to={`/user/`+item.user._id} ><p>{item.user.username}</p></NavLink></a>
+              <a > <NavLink to={`/user/`+item.user._id}  ><p>{item.user.username}</p></NavLink></a>
             </div>
             <br />
             <hr />
+            
         </div>
+        
+        </>
             )
         })}
         </div>
+        
     </>
+    
     }
     </>
+    
   )
 }
 export default Home

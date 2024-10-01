@@ -4,7 +4,10 @@ body {
     margin: 0;
     padding: 0;
 }
-
+form{
+    display: flex;
+    flex-direction: column;
+}
 .container {
     max-width: 600px;
     margin: 50px auto;
@@ -12,6 +15,7 @@ body {
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    
 }
 
 h1 {
@@ -20,6 +24,8 @@ h1 {
 }
 
 .form-group {
+    display: flex;
+    flex-direction: column;
     margin-bottom: 15px;
 }
 

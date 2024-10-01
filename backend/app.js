@@ -9,7 +9,7 @@ const bodyparser = require('body-parser')
 // const userentry = require('./modals/user')
 const app = express()
 const cors = require('cors')
-app.use(cors())
+app.use(cors());
 app.use(bodyparser.json())
 app.use(express.static(path.join(__dirname,'public')))
 const postentry = require('./modals/post')
@@ -56,6 +56,20 @@ app.post('/login',async (req,res)=>{
         }
     });
 })
+app.get('/user/:id', async (req, res) => {
+    const {id} = req.params;
+
+    console.log(id)
+    let user = await userentry.findOne({_id: id});
+    if (user) {
+        return res.json(user);
+    }
+
+    console.log(user)
+    res.send({"message": "error"});
+})
+
+
 app.post('/uploads',upload.single('file'), async (req,res)=>{
     console.log(req.body.token)
     console.log(req.file)
@@ -152,8 +166,11 @@ app.get('/all-post',verifytoken,async (req,res)=>{
     }
     
 })
+
+
 function verifytoken(req,res,next){
     const token = req.headers['authorization']
+    
     // console.log('middlewae caleed',token)
     req.user=token
     next()
