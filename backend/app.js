@@ -39,7 +39,41 @@ const userentry= mongoose.model('user',userschema)
 app.get('/',(req,res)=>{
     res.send('hello')
 })
+app.post('/like-post/:postid', verifytoken, async (req, res) => {
+    console.log()
+    let data = jwt.verify(req.user,'secret')
+    console.log(data)
+    req.user.userid=data.userid
+    console.log(data.userid)
+    console.log(req.user.userid)
 
+    const { postid } = req.params;
+    
+    try {
+        let post = await postentry.findOne({ _id: postid }).populate('user');
+        
+        if (post.like.indexOf(data.userid) === -1) {
+            post.like.push(data.userid);
+        } else {
+            post.like.splice(post.like.indexOf(data.userid), 1);
+        }
+        await post.save();
+        console.log(post)
+        res.status(200).json({ message: "Post like status updated", like: post.like.length });
+    } catch (error) {
+        console.error('Error updating like status:', error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+app.post('/delete-post/:id',verifytoken,async (req,res)=>{
+    console.log(req.params)
+    const postid = req.params.id
+    
+    let post = await postentry.findOneAndDelete({_id:postid})
+    
+    res.status(200).json({message:"the post is deleted now "})
+
+})
 app.post('/login',async (req,res)=>{
     const {email,password}= req.body
     let user = await userentry.findOne({email})

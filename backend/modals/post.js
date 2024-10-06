@@ -7,9 +7,11 @@ const postschema = mongoose.Schema({
     user:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'user'
-    }
-
-    ,
+    },
+    like:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'user'
+    }],
     pdf:String,
 })
 module.exports = mongoose.model('post',postschema)

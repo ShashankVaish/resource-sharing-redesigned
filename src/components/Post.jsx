@@ -43,6 +43,29 @@ const Post = () => {
         
     
       }
+      const deletepost = async (postId)=>{
+        try{
+            await fetch(`http://localhost:3000/delete-post/${postId}`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  authorization: localStorage.getItem('token')
+                }
+            })
+            loadposts();
+         } catch(err){
+            console.log("the error occure",err)
+
+
+        }
+
+
+                
+        
+    
+
+
+      }
       const loadposts = async ()=>{
         let result = await fetch('http://localhost:3000/user-post',{
             headers:{
@@ -123,6 +146,13 @@ const Post = () => {
             <div className="post-item">
                 <strong>Username</strong>
                 <p className="post-username">{postusername}</p>
+            </div>
+            <div className="post-item">
+                <strong>Likes : {item.like.length}</strong>
+                
+            </div>
+            <div className="delete-post">
+                <button onClick={()=> deletepost(item._id)}>Delete</button>
             </div>
             <br />
             <hr />

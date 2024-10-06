@@ -1,0 +1,50 @@
+/* Beautiful Search Bar Styling */
+.search-bar {
+    width: 95%;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border: 2px solid #ff7e5f;
+    border-radius: 25px;
+    background-color: #fff;
+    font-size: 18px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  /* Placeholder Styling */
+  .search-bar::placeholder {
+    color: #999;
+    font-size: 16px;
+  }
+  
+  /* Focus Effect */
+  .search-bar:focus {
+    border-color: #feb47b;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    outline: none;
+  }
+  
+  /* Search Bar Container Styling */
+  .search-bar-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+  }
+  /* Like button styling */
+.post-item button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #ff7e5f;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .post-item button:hover {
+    background-color: #feb47b;
+  }
+.post-item-like{
+  width: 10%;
+}  
