@@ -8,7 +8,7 @@ const userschema = mongoose.Schema({
     post:[
         {
             type:mongoose.Schema.Types.ObjectId,
-            // ref:'post'
+            ref:'post',
         }
     ],
     profilepic:{

@@ -65,14 +65,31 @@ app.post('/like-post/:postid', verifytoken, async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 });
+
 app.post('/delete-post/:id',verifytoken,async (req,res)=>{
     console.log(req.params)
     const postid = req.params.id
     
-    let post = await postentry.findOneAndDelete({_id:postid})
+    try{
+        let post = await postentry.findOneAndDelete({_id:postid})
     
-    res.status(200).json({message:"the post is deleted now "})
+        res.status(200).json({message:"the post is deleted now "})
+    }catch(err){
+        console.log('Error deleting ',err)
+        res.status(500).json({message:"internal server error"})
+    }
 
+})
+app.post('/edit-post/:id',verifytoken,async (req,res)=>{
+    const {id}=req.params;
+    console.log(id)
+    const post = await postentry.findOne({_id:id})
+    if(post){
+        return res.json(post)
+    }
+    res.send({"message":"the post is not found"})
+    
+    
 })
 app.post('/login',async (req,res)=>{
     const {email,password}= req.body
@@ -188,6 +205,9 @@ app.get('/user-post',verifytoken,async (req,res)=>{
     if(data){
         let user = await userentry.findOne({_id:data.userid}).populate('post')
         res.json({post:user.post,username:user.username})
+    }
+    else{
+        res.json({"message":"error in the server post"})
     }
 
 })

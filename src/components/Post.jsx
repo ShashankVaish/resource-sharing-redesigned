@@ -11,6 +11,8 @@ const Post = () => {
     
     const [posts, setPosts] = useState([])
     const [postusername, setPostusername] = useState("")
+    
+    
     const {
         register,
         handleSubmit,
@@ -18,6 +20,7 @@ const Post = () => {
         watch,
         formState,
         formState: { errors },
+        setValue,
       } = useForm()
     
       const onSubmit = async (data) =>{ 
@@ -43,29 +46,77 @@ const Post = () => {
         
     
       }
-      const deletepost = async (postId)=>{
-        try{
-            await fetch(`http://localhost:3000/delete-post/${postId}`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  authorization: localStorage.getItem('token')
-                }
-            })
-            loadposts();
-         } catch(err){
-            console.log("the error occure",err)
+      
+      
+      const editpost = async (post) => {
+        try {
+          const response = await fetch(`http://localhost:3000/edit-post/${post}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              authorization: localStorage.getItem('token'),
+            },
+          });
+      
+          if (response.ok) {
+            const result = await response.json();
+            console.log(result);
 
+            
+            
+      
+            
+            setValue('title', result.title);
+            setValue('description', result.description);
+            setValue('subject', result.subject);
+            setValue('pdf', result.pdf);
+            // the delete post
 
+            
+
+            
+            
+          } else {
+            console.log('Failed to edit post');
+          }
+        } catch (err) {
+          console.log('An error occurred:', err);
         }
-
-
-                
-        
+      };
+      const handleEditDelete = async (p) => {
+        try {
+            // Edit post first (ensure it's an async function if needed)
+            await editpost(p);
+            
+            // Then delete post
+            await deletepost(p);
+        } catch (error) {
+            console.error("Error in edit or delete action:", error);
+        }
+    };
     
+      const deletepost = async (postId) => {
+        try {
+          const response = await fetch(`http://localhost:3000/delete-post/${postId}`, {
+            method: 'POST', // Change method to DELETE if that's what your backend expects
+            headers: {
+              'Content-Type': 'application/json',
+              authorization: localStorage.getItem('token'),
+            },
+          });
+      
+          if (response.ok) {
+            console.log('Post deleted successfully');
+            loadposts();
+          } else {
+            console.log('Failed to delete post');
+          }
+        } catch (err) {
+          console.log('An error occurred:', err);
+        }
+      };
 
-
-      }
+     
       const loadposts = async ()=>{
         let result = await fetch('http://localhost:3000/user-post',{
             headers:{
@@ -153,6 +204,13 @@ const Post = () => {
             </div>
             <div className="delete-post">
                 <button onClick={()=> deletepost(item._id)}>Delete</button>
+            </div>
+            <div>
+                <button onClick={()=>{
+                    
+                    handleEditDelete(item._id);
+                    
+                }}>Edit</button>
             </div>
             <br />
             <hr />
