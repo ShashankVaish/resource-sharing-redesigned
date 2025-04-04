@@ -149,9 +149,8 @@ const Post = () => {
 
   return (
     <>
-    <div className="container">
-        <h1>Create a New Post</h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
+        <h2>Create a New Post</h2>
             <div className="form-group">
                 <label >Title:</label>
                 <input type="text" {...register("title")}  required/>
@@ -165,13 +164,13 @@ const Post = () => {
                 <input type="text" {...register("subject")}  required/>
             </div>
             <div className="form-group">
-                <label >Upload PDF:</label>
-                <input type="file" {...register("pdf")}  accept="application/pdf" required/>
+                <label className="file-label" for="file-picker">Click to select or Drag and Drop a File</label>
+                <input id="file-picker" type="file" {...register("pdf")}  accept="application/pdf" required/>
             </div>
             <button type="submit">Create Post</button>
-        </form>
-        <h1>Post Details</h1>
-        <div className="container">
+
+            <h2 id="post-deets-title">Post Details</h2>
+        
         
         {posts.map((item)=>{
             return(
@@ -217,8 +216,8 @@ const Post = () => {
         </div>
             )
         })}
-    </div>
-    </div>
+        </form>
+
     </>
   )
 }
