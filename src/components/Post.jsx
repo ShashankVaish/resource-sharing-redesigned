@@ -10,9 +10,19 @@ const Post = () => {
     
     
     const [posts, setPosts] = useState([])
+    const [label, setLabel] = useState("Click to select or Drag and Drop a File");
     const [postusername, setPostusername] = useState("")
     
-    
+    const handleFileChange = (event) => {
+      const file = event.target.files[0];
+      console.log("File selected:", file);
+      if (file) {
+        setLabel(file.name); // Update label to the file name
+      } else {
+        setLabel("Choose a file"); // Reset label if no file is selected
+      }
+    };
+
     const {
         register,
         handleSubmit,
@@ -149,9 +159,8 @@ const Post = () => {
 
   return (
     <>
-    <div className="container">
-        <h1>Create a New Post</h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
+        <h2>Create a New Post</h2>
             <div className="form-group">
                 <label >Title:</label>
                 <input type="text" {...register("title")}  required/>
@@ -165,13 +174,13 @@ const Post = () => {
                 <input type="text" {...register("subject")}  required/>
             </div>
             <div className="form-group">
-                <label >Upload PDF:</label>
-                <input type="file" {...register("pdf")}  accept="application/pdf" required/>
+                <label className="file-label" htmlFor="file-picker">{label}</label>
+                <input id="file-picker" type="file" onChange={handleFileChange} accept="application/pdf" required/>
             </div>
             <button type="submit">Create Post</button>
-        </form>
-        <h1>Post Details</h1>
-        <div className="container">
+
+            <h2 id="post-deets-title">Post Details</h2>
+        
         
         {posts.map((item)=>{
             return(
@@ -217,8 +226,8 @@ const Post = () => {
         </div>
             )
         })}
-    </div>
-    </div>
+        </form>
+
     </>
   )
 }
