@@ -12,13 +12,25 @@ const cors = require('cors')
 app.use(cors());
 app.use(bodyparser.json())
 app.use(express.static(path.join(__dirname,'public')))
+require('dotenv').config();
 const postentry = require('./modals/post')
 const upload = require('./utils/profile-picture')
 const fs = require('fs');
 // const path = require('path');
 
 // mongoose connection
-mongoose.connect(process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/rs')
+console.log(process.env.MONGO_URL);
+console.log("Connection string from env:", JSON.stringify(process.env.MONGO_URL));
+
+mongoose.connect(`${process.env.MONGO_URL}`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => console.error('MongoDB connection error:', err));
+
+    
 const userschema = mongoose.Schema({
 
     name:String,
