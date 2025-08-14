@@ -14,9 +14,11 @@ app.use(bodyparser.json())
 app.use(express.static(path.join(__dirname,'public')))
 const postentry = require('./modals/post')
 const upload = require('./utils/profile-picture')
+const fs = require('fs');
+// const path = require('path');
 
 // mongoose connection
-mongoose.connect(`mongodb://127.0.0.1:27017/rs`)
+mongoose.connect(process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/rs')
 const userschema = mongoose.Schema({
 
     name:String,
@@ -65,32 +67,43 @@ app.post('/like-post/:postid', verifytoken, async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 });
+// app.post('/delete-post/:id',verifytoken,async (req,res)=>{
+//     console.log(req.params)
+//     const postid = req.params.id
+//     
+//     let post = await postentry.findOneAndDelete({_id:postid})
+//     
+//     res.status(200).json({message:"the post is deleted now "})
 
-app.post('/delete-post/:id',verifytoken,async (req,res)=>{
-    console.log(req.params)
-    const postid = req.params.id
-    
-    try{
-        let post = await postentry.findOneAndDelete({_id:postid})
-    
-        res.status(200).json({message:"the post is deleted now "})
-    }catch(err){
-        console.log('Error deleting ',err)
-        res.status(500).json({message:"internal server error"})
+// })
+app.post('/delete-post/:id', verifytoken, async (req, res) => {
+    console.log(req.params);
+    const postid = req.params.id;
+  
+    try {
+      let post = await postentry.findOneAndDelete({ _id: postid });
+      
+      if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+  
+      // Assuming the file path is stored in the 'filePath' field of the post document
+      const filePath = path.join(__dirname, 'public/images', post.pdf);
+  
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error("Error deleting file:", err);
+          return res.status(500).json({ message: "Error deleting file" });
+        }
+  
+        res.status(200).json({ message: "The post and associated file are deleted now" });
+      });
+    } catch (err) {
+      console.error("Error deleting post:", err);
+      res.status(500).json({ message: "Error deleting post" });
     }
-
-})
-app.post('/edit-post/:id',verifytoken,async (req,res)=>{
-    const {id}=req.params;
-    console.log(id)
-    const post = await postentry.findOne({_id:id})
-    if(post){
-        return res.json(post)
-    }
-    res.send({"message":"the post is not found"})
-    
-    
-})
+  });
+  
 app.post('/login',async (req,res)=>{
     const {email,password}= req.body
     let user = await userentry.findOne({email})
@@ -196,7 +209,6 @@ app.post('/post-upload',upload.single('file'),verifytoken,async (req,res)=>{
         
         res.send({message:'success'})
 
-
     }
 
 })
@@ -205,9 +217,6 @@ app.get('/user-post',verifytoken,async (req,res)=>{
     if(data){
         let user = await userentry.findOne({_id:data.userid}).populate('post')
         res.json({post:user.post,username:user.username})
-    }
-    else{
-        res.json({"message":"error in the server post"})
     }
 
 })

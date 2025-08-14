@@ -1,235 +1,262 @@
-import React, { useEffect } from 'react'
-import './Post.css'
-import axios from 'axios'
-import { useForm } from "react-hook-form"
-import { v4 as uuidv4 } from 'uuid';
-import { useState } from 'react';
-import { set } from 'mongoose';
-// import { splitVendorChunkPlugin } from 'vite';
+import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
+import './Post.css';
+import axios from 'axios';
+import { useForm } from 'react-hook-form';
+import { useAuth } from '../context/context.jsx';
+import { Navigate } from 'react-router-dom';
+import config from '../config/config.js';
 const Post = () => {
-    
-    
-    const [posts, setPosts] = useState([])
-    const [label, setLabel] = useState("Click to select or Drag and Drop a File");
-    const [postusername, setPostusername] = useState("")
-    
-    const handleFileChange = (event) => {
-      const file = event.target.files[0];
-      console.log("File selected:", file);
-      if (file) {
-        setLabel(file.name); // Update label to the file name
-      } else {
-        setLabel("Choose a file"); // Reset label if no file is selected
-      }
-    };
+    const { isAuthenticated } = useAuth();
+    const [posts, setPosts] = useState([]);
+    const [postUsername, setPostUsername] = useState('');
+    const [selectedPdf, setSelectedPdf] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        watch,
-        formState,
-        formState: { errors },
-        setValue,
-      } = useForm()
-    
-      const onSubmit = async (data) =>{ 
-        console.log(data)
-        const formdata = new FormData()
-        formdata.append('title',data.title)
-        formdata.append('description',data.description)
-        formdata.append('subject',data.subject)
-        formdata.append('file',data.pdf[0])
-        let result=axios.post('http://localhost:3000/post-upload',formdata,{
-            headers:{
-                authorization:localStorage.getItem('token'),
-                "Content-Type":"multipart/form-data"
-              }
+    const { register, handleSubmit, reset, formState, formState: { errors } } = useForm();
 
-        })
-        result.then((res)=>{
-            console.log(res)
-            loadposts()
-        }).catch((err)=>{
-            console.log(err)
-        })
-        
-    
-      }
-      
-      
-      const editpost = async (post) => {
+    const onSubmit = async (data) => {
         try {
-          const response = await fetch(`http://localhost:3000/edit-post/${post}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              authorization: localStorage.getItem('token'),
-            },
-          });
-      
-          if (response.ok) {
-            const result = await response.json();
+            const formData = new FormData();
+            formData.append('title', data.title);
+            formData.append('description', data.description);
+            formData.append('subject', data.subject);
+            formData.append('file', data.pdf[0]);
+
+            const result = await axios.post(`${config.API_BASE_URL}/post-upload`, formData, {
+                headers: {
+                    authorization: localStorage.getItem('token'),
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
             console.log(result);
-
-            
-            
-      
-            
-            setValue('title', result.title);
-            setValue('description', result.description);
-            setValue('subject', result.subject);
-            setValue('pdf', result.pdf);
-            // the delete post
-
-            
-
-            
-            
-          } else {
-            console.log('Failed to edit post');
-          }
+            loadPosts();
+            reset();
         } catch (err) {
-          console.log('An error occurred:', err);
-        }
-      };
-      const handleEditDelete = async (p) => {
-        try {
-            // Edit post first (ensure it's an async function if needed)
-            await editpost(p);
-            
-            // Then delete post
-            await deletepost(p);
-        } catch (error) {
-            console.error("Error in edit or delete action:", error);
+            console.log(err);
         }
     };
-    
-      const deletepost = async (postId) => {
+
+    const deletePost = async (postId) => {
         try {
-          const response = await fetch(`http://localhost:3000/delete-post/${postId}`, {
-            method: 'POST', // Change method to DELETE if that's what your backend expects
-            headers: {
-              'Content-Type': 'application/json',
-              authorization: localStorage.getItem('token'),
-            },
-          });
-      
-          if (response.ok) {
-            console.log('Post deleted successfully');
-            loadposts();
-          } else {
-            console.log('Failed to delete post');
-          }
+            await fetch(`${config.API_BASE_URL}/delete-post/${postId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    authorization: localStorage.getItem('token'),
+                },
+            });
+
+            loadPosts();
         } catch (err) {
-          console.log('An error occurred:', err);
+            console.log('The error occurred', err);
         }
-      };
+    };
 
-     
-      const loadposts = async ()=>{
-        let result = await fetch('http://localhost:3000/user-post',{
-            headers:{
-                authorization:localStorage.getItem('token'),
-                
-              }
+    const loadPosts = async () => {
+        setLoading(true);
+        try {
+            const result = await fetch(`${config.API_BASE_URL}/user-post`, {
+                headers: {
+                    authorization: localStorage.getItem('token'),
+                },
+            });
 
-        })
-        let data = await result.json()
-        console.log(data.post)
-        console.log(data.username)
-        setPostusername(data.username)
-        console.log(data.post.length)
-        if(data.post.length>0){
-            setPosts((data.post).reverse())
+            const data = await result.json();
+            console.log(data.post);
+            console.log(data.username);
+
+            setPostUsername(data.username);
+            setPosts(data.post.length > 0 ? data.post.reverse() : []);
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setLoading(false);
         }
+    };
 
-      }
-      useEffect(() => {
+    const handleOpenPdf = (fileUrl) => {
+        setSelectedPdf(fileUrl);
+    };
+
+    useEffect(() => {
         if (formState.isSubmitSuccessful) {
-          reset()
+            reset();
         }
-      }, [formState])
-    
-      useEffect(() => {
-        loadposts()
-        
-      },[])
-      
+    }, [formState, reset]);
 
-  return (
-    <>
-    <form onSubmit={handleSubmit(onSubmit)}>
-        <h2>Create a New Post</h2>
-            <div className="form-group">
-                <label >Title:</label>
-                <input type="text" {...register("title")}  required/>
-            </div>
-            <div className="form-group">
-                <label >Description:</label>
-                <textarea {...register("description")}  rows="4" required></textarea>
-            </div>
-            <div className="form-group">
-                <label >Subject:</label>
-                <input type="text" {...register("subject")}  required/>
-            </div>
-            <div className="form-group">
-                <label className="file-label" htmlFor="file-picker">{label}</label>
-                <input id="file-picker" type="file" onChange={handleFileChange} accept="application/pdf" required/>
-            </div>
-            <button type="submit">Create Post</button>
+    useEffect(() => {
+        if (isAuthenticated) {
+            loadPosts();
+        }
+    }, [isAuthenticated]);
 
-            <h2 id="post-deets-title">Post Details</h2>
-        
-        
-        {posts.map((item)=>{
-            return(
-                <div className="post-details" key={item._id}>
-            <div className="post-item">
-                <strong>Title:</strong>
-                <span id="post-title">{item.title}</span>
+    // Redirect if not authenticated
+    if (!isAuthenticated) {
+        return <Navigate to="/login" replace={true} />;
+    }
+
+    return (
+        <div className="post-container">
+            {/* Header Section */}
+            <div className="post-header-section">
+                <div className="post-header-content">
+                    <h1 className="post-header-title">Create & Manage Posts</h1>
+                    <p className="post-header-subtitle">Share your knowledge and resources with the community</p>
+                </div>
             </div>
-            <div className="post-item">
-                <strong>Description:</strong>
-                <p id="post-description">
-                    {item.description}
-                </p>
+
+            {/* Form Section */}
+            <div className="form-section">
+                <div className="form-card">
+                    <h2 className="form-title">Create a New Post</h2>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <div className="form-grid">
+                            <div className="form-group">
+                                <label className="form-label">Title</label>
+                                <input 
+                                    type="text" 
+                                    className="form-input"
+                                    {...register('title', { required: 'Title is required' })} 
+                                    placeholder="Enter post title"
+                                />
+                                {errors.title && <span className="error-message">{errors.title.message}</span>}
+                            </div>
+                            
+                            <div className="form-group">
+                                <label className="form-label">Subject</label>
+                                <input 
+                                    type="text" 
+                                    className="form-input"
+                                    {...register('subject', { required: 'Subject is required' })} 
+                                    placeholder="Enter subject (e.g., Mathematics, Science)"
+                                />
+                                {errors.subject && <span className="error-message">{errors.subject.message}</span>}
+                            </div>
+                            
+                            <div className="form-group full-width">
+                                <label className="form-label">Description</label>
+                                <textarea 
+                                    className="form-textarea"
+                                    {...register('description', { required: 'Description is required' })} 
+                                    rows="4" 
+                                    placeholder="Describe your resource in detail..."
+                                />
+                                {errors.description && <span className="error-message">{errors.description.message}</span>}
+                            </div>
+                            
+                            <div className="form-group full-width">
+                                <label className="form-label">Upload PDF</label>
+                                <input 
+                                    type="file" 
+                                    className="form-file"
+                                    {...register('pdf', { required: 'PDF file is required' })} 
+                                    accept="application/pdf" 
+                                />
+                                {errors.pdf && <span className="error-message">{errors.pdf.message}</span>}
+                            </div>
+                        </div>
+                        
+                        <button type="submit" className="submit-button">
+                            Create Post
+                        </button>
+                    </form>
+                </div>
             </div>
-            <div className="post-item">
-                <strong>Subject:</strong>
-                <span id="post-subject">{item.subject}</span>
-            </div>
-            <div className="post-item">
-                <strong>PDF Document:</strong>
-                <a href={`http://localhost:3000/images/`+item.pdf} target="_blank" id="pdf-link">View PDF</a>
-            </div>
-            <div className="post-item">
-                <strong>Username</strong>
-                <p className="post-username">{postusername}</p>
-            </div>
-            <div className="post-item">
-                <strong>Likes : {item.like.length}</strong>
+            
+            {/* Posts Display Section */}
+            <div className="posts-display-section">
+                <div className="posts-display-header">
+                    <h2 className="posts-display-title">Your Posts</h2>
+                    <p className="posts-display-subtitle">Manage and view all your shared resources</p>
+                </div>
                 
+                {loading ? (
+                    <div className="loading-posts">
+                        <div className="loading-spinner"></div>
+                    </div>
+                ) : posts.length === 0 ? (
+                    <div className="empty-posts">
+                        <div className="empty-posts-icon">📚</div>
+                        <h3 className="empty-posts-title">No posts yet</h3>
+                        <p className="empty-posts-message">Create your first post to get started!</p>
+                    </div>
+                ) : (
+                    <div className="posts-grid">
+                        {posts.map((item) => (
+                            <div className="post-display-card" key={item._id}>
+                                <div className="post-display-header">
+                                    <h3 className="post-display-title">{item.title}</h3>
+                                    <span className="post-display-subject">{item.subject}</span>
+                                </div>
+                                
+                                <div className="post-display-body">
+                                    <p className="post-display-description">{item.description}</p>
+                                    
+                                    <div className="post-display-meta">
+                                        <div className="post-display-author">
+                                            <div className="post-display-author-avatar">
+                                                {postUsername.charAt(0).toUpperCase()}
+                                            </div>
+                                            <span className="post-display-author-name">{postUsername}</span>
+                                        </div>
+                                        
+                                        <div className="post-display-stats">
+                                            <div className="post-display-likes">
+                                                <span>❤️</span>
+                                                <span>{item.like.length || 0} likes</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="post-display-actions">
+                                        <button 
+                                            className="view-pdf-button"
+                                            onClick={() => handleOpenPdf(`${config.API_BASE_URL}/images/${item.pdf}`)}
+                                        >
+                                            <span>📄</span>
+                                            View PDF
+                                        </button>
+                                        
+                                        <button 
+                                            className="delete-button"
+                                            onClick={() => deletePost(item._id)}
+                                        >
+                                            <span>🗑️</span>
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
-            <div className="delete-post">
-                <button onClick={()=> deletepost(item._id)}>Delete</button>
-            </div>
-            <div>
-                <button onClick={()=>{
-                    
-                    handleEditDelete(item._id);
-                    
-                }}>Edit</button>
-            </div>
-            <br />
-            <hr />
+
+            {/* PDF Viewer Modal */}
+            {selectedPdf && (
+                <div className="pdf-viewer-section">
+                    <div className="pdf-viewer-content">
+                        <div className="pdf-viewer-header">
+                            <h3 className="pdf-viewer-title">PDF Viewer</h3>
+                            <button 
+                                className="close-pdf-button"
+                                onClick={() => setSelectedPdf(null)}
+                            >
+                                Close
+                            </button>
+                        </div>
+                        <iframe
+                            src={selectedPdf}
+                            className="pdf-viewer-iframe"
+                            title="PDF Viewer"
+                        />
+                    </div>
+                </div>
+            )}
         </div>
-            )
-        })}
-        </form>
+    );
+};
 
-    </>
-  )
-}
-
-export default Post
+export default Post;

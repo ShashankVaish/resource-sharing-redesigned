@@ -5,6 +5,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import { AuthProvider } from './context/context.jsx';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import Login from './components/Login';
@@ -13,9 +14,8 @@ import UserInfo from './components/UserInfo';
 import Post from './components/Post';
 import Usercard from './components/Usercard'
 import Footer from './components/Footer';
+
 function App() {
-  
-  
   
   const router = createBrowserRouter([
     {
@@ -54,14 +54,12 @@ function App() {
 
   ]);
   
-  
 
 
   return (
-    <>
-    <RouterProvider router={router} />
-      
-    </>
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   )
 }
 
