@@ -4,8 +4,8 @@
 // If not provided, it falls back to default values
 
 const config = {
-  API_BASE_URL: process.env.REACT_APP_API_BASE_URL || "https://your-backend.onrender.com/api"|| "http://localhost:3000",
-  FILE_UPLOAD_URL: process.env.REACT_APP_FILE_UPLOAD_URL || "https://your-s3-bucket-url.amazonaws.com",
+  API_BASE_URL:   "http://localhost:3000"||"https://your-backend.onrender.com/api",
+  FILE_UPLOAD_URL:  "https://your-s3-bucket-url.amazonaws.com",
   APP_NAME: "Resource Sharing Platform",
   VERSION: "1.0.0"
 };
