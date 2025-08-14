@@ -1,6 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import './Usercard.css'
+import config from '../config/config.js'
 const Usercard = () => {
   const [user, setUser] = useState({})
 
@@ -9,7 +10,7 @@ const Usercard = () => {
     let userid = url.toString().split("/")[4]
 
     try {
-      const result = await axios.get(`http://localhost:3000/user/${userid}`, {
+      const result = await axios.get(`${config.API_BASE_URL}/user/${userid}`, {
         headers: {
           'Content-Type': 'application/json'
         },
@@ -31,7 +32,7 @@ const Usercard = () => {
       <h1>User Card</h1>
       {user ? (
         <div className="user-card">
-        <img src={`http://localhost:3000/images/${user.profilepic}`} alt="Profile" />
+        <img src={`${config.API_BASE_URL}/images/${user.profilepic}`} alt="Profile" />
         <h2>{user.name}</h2>
         <p>Email: {user.email}</p>
         <p>Username: {user.username}</p>

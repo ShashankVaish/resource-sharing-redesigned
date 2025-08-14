@@ -18,7 +18,7 @@ const fs = require('fs');
 // const path = require('path');
 
 // mongoose connection
-mongoose.connect(`mongodb://127.0.0.1:27017/rs`)
+mongoose.connect(process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/rs')
 const userschema = mongoose.Schema({
 
     name:String,
@@ -70,9 +70,9 @@ app.post('/like-post/:postid', verifytoken, async (req, res) => {
 // app.post('/delete-post/:id',verifytoken,async (req,res)=>{
 //     console.log(req.params)
 //     const postid = req.params.id
-    
+//     
 //     let post = await postentry.findOneAndDelete({_id:postid})
-    
+//     
 //     res.status(200).json({message:"the post is deleted now "})
 
 // })
@@ -208,7 +208,6 @@ app.post('/post-upload',upload.single('file'),verifytoken,async (req,res)=>{
         await user.save()
         
         res.send({message:'success'})
-
 
     }
 
