@@ -77,6 +77,10 @@ const Post = () => {
     };
 
     const handleOpenPdf = (fileUrl) => {
+        fileUrl.includes("/upload/") 
+    ? fileUrl.replace("/upload/", "/upload/fl_attachment:false/") 
+    : fileUrl;
+        console.log("the file url is ",fileUrl);
         setSelectedPdf(fileUrl);
     };
 
@@ -213,7 +217,7 @@ const Post = () => {
                                     <div className="post-display-actions">
                                         <button 
                                             className="view-pdf-button"
-                                            onClick={() => handleOpenPdf(`${config.API_BASE_URL}/images/${item.pdf}`)}
+                                            onClick={() => handleOpenPdf(item.pdf)}
                                         >
                                             <span>📄</span>
                                             View PDF
@@ -255,8 +259,8 @@ const Post = () => {
                     </div>
                 </div>
             )}
+
         </div>
     );
-};
-
+}
 export default Post;

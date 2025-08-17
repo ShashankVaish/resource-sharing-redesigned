@@ -12,13 +12,26 @@ const cors = require('cors')
 app.use(cors());
 app.use(bodyparser.json())
 app.use(express.static(path.join(__dirname,'public')))
+require('dotenv').config();
 const postentry = require('./modals/post')
 const upload = require('./utils/profile-picture')
 const fs = require('fs');
 // const path = require('path');
-
+const { uploadOnCloudinary,
+  deleteUploadOnCloudinary, uploadOnCloudinaryforpdf } = require('./services/cloudinary/cloudinary.service.js');
 // mongoose connection
-mongoose.connect(process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/rs')
+console.log(process.env.MONGO_URL);
+console.log("Connection string from env:", JSON.stringify(process.env.MONGO_URL));
+
+mongoose.connect(`${process.env.MONGO_URL}`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => console.error('MongoDB connection error:', err));
+
+    
 const userschema = mongoose.Schema({
 
     name:String,
@@ -142,7 +155,14 @@ app.post('/uploads',upload.single('file'), async (req,res)=>{
             let data = jwt.verify(req.body.token,'secret')
             console.log(data)
             const user = await userentry.findOne({_id:data.userid})
-            user.profilepic = req.file.filename
+            if(!user) return res.status(404).send('User not found');
+            const cloudinarypath = await uploadOnCloudinary(req.file.path);
+            if (!cloudinarypath) {
+                return res.status(500).send('Error uploading file to Cloudinary');
+            }
+            console.log(cloudinarypath)
+            
+            user.profilepic = cloudinarypath.secure_url
             await user.save()
         }
 })
@@ -193,12 +213,23 @@ app.post('/post-upload',upload.single('file'),verifytoken,async (req,res)=>{
     // console.log(pdf)
     let data = jwt.verify(req.user,'secret')
     console.log(data)
+    const cloudinarypath = await uploadOnCloudinaryforpdf(req.file.path);
+    if (!cloudinarypath) {
+        return res.status(500).send('Error uploading file to Cloudinary');
+    }   
+    console.log(cloudinarypath)
+    
+
+    if(!title || !description || !subject || !req.file) return res.status(400).send('All fields are required');
+    console.log('Data from JWT:', data);
+    console.log('File uploaded:', req.file);    
+    // console.log('File path:', req.file.path);
     if(data){
         let post = await postentry.create({
             title,
             description,
             subject,
-            pdf:req.file.filename,
+            pdf:cloudinarypath,
             user:data.userid
         
         })

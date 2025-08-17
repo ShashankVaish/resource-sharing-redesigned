@@ -137,7 +137,7 @@ const Home = () => {
                       </button>
                       
                       <a 
-                        href={`${config.API_BASE_URL}/images/${item.pdf}`} 
+                        href={item.pdf} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="pdf-link"
