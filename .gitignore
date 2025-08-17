@@ -11,6 +11,7 @@ backend/node_modules
 client/node_modules
 # Dependency directories
 node_modules
+backend/.env
 # Build directories
 backend/package-lock.json
 client/package-lock.json
