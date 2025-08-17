@@ -117,7 +117,9 @@ const UserInfo = () => {
             <div className="profile-avatar-container">
               {image ? (
                 <img 
-                  src={`${config.API_BASE_URL}/images/${image}`} 
+                  src={
+                    image.startsWith('http') ? image : `${config.API_BASE_URL}/images/${image}`
+                  } 
                   alt="Profile Picture" 
                   className="profile-avatar"
                 />

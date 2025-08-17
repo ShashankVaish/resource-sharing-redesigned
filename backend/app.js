@@ -18,7 +18,7 @@ const upload = require('./utils/profile-picture')
 const fs = require('fs');
 // const path = require('path');
 const { uploadOnCloudinary,
-  deleteUploadOnCloudinary } = require('./services/cloudinary/cloudinary.service.js');
+  deleteUploadOnCloudinary, uploadOnCloudinaryforpdf } = require('./services/cloudinary/cloudinary.service.js');
 // mongoose connection
 console.log(process.env.MONGO_URL);
 console.log("Connection string from env:", JSON.stringify(process.env.MONGO_URL));
@@ -213,7 +213,7 @@ app.post('/post-upload',upload.single('file'),verifytoken,async (req,res)=>{
     // console.log(pdf)
     let data = jwt.verify(req.user,'secret')
     console.log(data)
-    const cloudinarypath = await uploadOnCloudinary(req.file.path);
+    const cloudinarypath = await uploadOnCloudinaryforpdf(req.file.path);
     if (!cloudinarypath) {
         return res.status(500).send('Error uploading file to Cloudinary');
     }   
@@ -229,7 +229,7 @@ app.post('/post-upload',upload.single('file'),verifytoken,async (req,res)=>{
             title,
             description,
             subject,
-            pdf:cloudinarypath.secure_url,
+            pdf:cloudinarypath,
             user:data.userid
         
         })
