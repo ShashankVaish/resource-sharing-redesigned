@@ -2,17 +2,39 @@ const express = require('express')
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const path = require('path')
+// const path = require('path')
 // const cors = require('cors')
 const multer = require('multer')
 const bodyparser = require('body-parser')
 // const userentry = require('./modals/user')
 const app = express()
+
+const path = require('path');
+
+// const __dirname = path.resolve(); // Get the current directory path
 const cors = require('cors')
-app.use(cors());
+const clientBuildPath = path.join(__dirname, "..", "client", "dist");
 app.use(bodyparser.json())
 app.use(express.static(path.join(__dirname,'public')))
 require('dotenv').config();
+if(process.env.NODE_ENV != "production") {
+app.use(cors({
+    origin : process.env.CORS_ORIGIN,
+    credentials : true
+}))}
+
+
+if (process.env.NODE_ENV === "production") {
+  // Serve static files from the client build
+  app.use(express.static(clientBuildPath));
+
+  // For all GET requests that are NOT API routes, send index.html (SPA fallback)
+  app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+});
+}
+
+
 const postentry = require('./modals/post')
 const upload = require('./utils/profile-picture')
 const fs = require('fs');

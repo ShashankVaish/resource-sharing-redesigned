@@ -25,6 +25,7 @@
     "react-hook-form": "^7.52.2",
     "react-router-dom": "^6.26.0",
     "resorce-sharing": "file:",
+    "resource-sharing-redesigned": "file:..",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
