@@ -12,7 +12,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import UserInfo from './components/UserInfo';
 import Post from './components/Post';
-import Usercard from './components/Usercard'
+import Usercard from './components/UserCard'
 import Footer from './components/Footer';
 
 function App() {
