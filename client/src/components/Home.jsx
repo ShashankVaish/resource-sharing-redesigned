@@ -12,7 +12,7 @@ const Home = () => {
   const getpost = async () => {
     setLoading(true)
     try {
-      let result = await fetch(`${config.API_BASE_URL}/all-post`, {
+      let result = await fetch(`${config.API_BASE_URL}/api/all-post`, {
         headers: {
           authorization: localStorage.getItem('token')
         }
@@ -41,7 +41,7 @@ const Home = () => {
 
   const handleLike = async (postId) => {
     try {
-      await fetch(`${config.API_BASE_URL}/like-post/${postId}`, {
+      await fetch(`${config.API_BASE_URL}/api/like-post/${postId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

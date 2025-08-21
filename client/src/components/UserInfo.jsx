@@ -28,7 +28,7 @@ const UserInfo = () => {
 
   const imageLoad = async () => {
     try {
-      let result = await fetch(`${config.API_BASE_URL}/getimage`, {
+      let result = await fetch(`${config.API_BASE_URL}/api/getimage`, {
         headers: {
           authorization: localStorage.getItem('token')
         }
