@@ -16,41 +16,38 @@ const Login = () => {
     formState: { errors },
   } = useForm()
 
-  const onSubmit = async (data) => {
-    setLoading(true)
-    setError('')
-    
-    try {
-      const response = await fetch(`${config.API_BASE_URL}/login`, {
-        method: 'POST',
-        headers: {
-          "content-type": "application/json"
-        },
-        body: JSON.stringify(data),
-      });
+ const onSubmit = async (data) => {
+  setLoading(true)
+  setError('')
+  
+  try {
+    const response = await fetch(`${config.API_BASE_URL}/api/login`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data),
+    });
 
-      const result = await response.json();
-      
-      if (result === "") {
-        setError('Invalid email or password. Please try again.')
-      } else {
-        const { succes, jwttoken, isloggendUser } = result
-        if (succes) {
-          // Use the context login function to update authentication state
-          login({ jwttoken, isloggendUser })
-          // Navigate to home page
-          navigate('/')
-        } else {
-          setError('Invalid email or password. Please try again.')
-        }
-      }
-    } catch (error) {
-      setError('An error occurred. Please try again.')
-      console.error('Login error:', error)
-    } finally {
-      setLoading(false)
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      setError(result.message || 'Invalid email or password. Please try again.')
+      return
     }
+
+    // ✅ Success
+    const { jwttoken, isloggendUser } = result
+    login({ jwttoken, isloggendUser })
+    navigate('/')
+    
+  } catch (error) {
+    setError('An error occurred. Please try again.')
+    console.error('Login error:', error)
+  } finally {
+    setLoading(false)
   }
+}
 
   // If already authenticated, redirect to home
   if (isAuthenticated) {

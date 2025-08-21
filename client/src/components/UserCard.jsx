@@ -10,7 +10,7 @@ const Usercard = () => {
     let userid = url.toString().split("/")[4]
 
     try {
-      const result = await axios.get(`${config.API_BASE_URL}/user/${userid}`, {
+      const result = await axios.get(`${config.API_BASE_URL}/api/user/${userid}`, {
         headers: {
           'Content-Type': 'application/json'
         },
@@ -32,7 +32,7 @@ const Usercard = () => {
       <h1>User Card</h1>
       {user ? (
         <div className="user-card">
-        <img src={`${config.API_BASE_URL}/images/${user.profilepic}`} alt="Profile" />
+        <img src={`${config.API_BASE_URL}/api/images/${user.profilepic}`} alt="Profile" />
         <h2>{user.name}</h2>
         <p>Email: {user.email}</p>
         <p>Username: {user.username}</p>

@@ -23,7 +23,7 @@ const Post = () => {
             formData.append('subject', data.subject);
             formData.append('file', data.pdf[0]);
 
-            const result = await axios.post(`${config.API_BASE_URL}/post-upload`, formData, {
+            const result = await axios.post(`${config.API_BASE_URL}/api/post-upload`, formData, {
                 headers: {
                     authorization: localStorage.getItem('token'),
                     "Content-Type": "multipart/form-data",
@@ -40,7 +40,7 @@ const Post = () => {
 
     const deletePost = async (postId) => {
         try {
-            await fetch(`${config.API_BASE_URL}/delete-post/${postId}`, {
+            await fetch(`${config.API_BASE_URL}/api/delete-post/${postId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ const Post = () => {
     const loadPosts = async () => {
         setLoading(true);
         try {
-            const result = await fetch(`${config.API_BASE_URL}/user-post`, {
+            const result = await fetch(`${config.API_BASE_URL}/api/user-post`, {
                 headers: {
                     authorization: localStorage.getItem('token'),
                 },

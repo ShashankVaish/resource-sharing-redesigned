@@ -23,7 +23,7 @@ const Signup = () => {
     setSuccess('')
     
     try {
-      const response = await fetch(`${config.API_BASE_URL}/register`, {
+      const response = await fetch(`${config.API_BASE_URL}/api/register`, {
         method: 'POST',
         headers: {
           "content-type": "application/json"
