@@ -18,9 +18,10 @@ const Home = () => {
         }
       })
       let data = await result.json()
+      console.log(data)
       if (data) {
         console.log(data.post)
-        setAllpost(data.post.reverse())
+        setAllpost(data.posts.reverse())
       }
     } catch (error) {
       console.error('Error fetching posts:', error)
