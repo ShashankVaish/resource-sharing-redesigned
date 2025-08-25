@@ -15,12 +15,16 @@ const app = express();
 app.use(bodyparser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// CORS configuration
 if (process.env.NODE_ENV !== "production") {
   app.use(cors({
     origin: process.env.CORS_ORIGIN,
     credentials: true
   }));
 }
+
+// Serve the built React app (must come before API routes)
+app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 
 // MongoDB connection
 mongoose.connect(`${process.env.MONGO_URL}`, {
@@ -63,11 +67,6 @@ function verifytoken(req, res, next) {
 }
 
 // ---------------- ROUTES ----------------
-
-// Test route
-app.get('/', (req, res) => {
-  res.send('hello');
-});
 
 // Like post
 app.post('/api/like-post/:postid', verifytoken, async (req, res) => {
@@ -220,14 +219,12 @@ app.get('/api/all-post', verifytoken, async (req, res) => {
 });
 
 // ---------------- SPA FALLBACK (last!) ----------------
-if (process.env.NODE_ENV === "production") {
-  const clientBuildPath = path.join(__dirname, "..", "client", "dist");
-  app.use(express.static(clientBuildPath));
+// Serve the built React app
+app.use(express.static(path.join(__dirname,'..',"client", 'dist')))
 
-  // Any non-API route → return React index.html
-  app.get(/^(?!\/api).*/, (req, res) => {
-    res.sendFile(path.join(clientBuildPath, "index.html"));
-  });
-}
+// Catch-all: send index.html for React Router
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '..', 'client', 'dist', 'index.html'));
+});
 
 app.listen(3000, () => console.log("Server running on port 3000"));
