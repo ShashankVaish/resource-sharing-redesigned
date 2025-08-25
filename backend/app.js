@@ -215,6 +215,7 @@ app.get('/api/user-post', verifytoken, async (req, res) => {
 app.get('/api/all-post', verifytoken, async (req, res) => {
   let data = jwt.verify(req.user, 'secret');
   let posts = await postentry.find().populate('user');
+  console.log(posts)
   res.json({ posts });
 });
 
