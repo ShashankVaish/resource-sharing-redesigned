@@ -45,7 +45,7 @@ const Footer = () => {
           </ul>
         </div>
         
-        {/* Contact Section */}
+        {/* Contact Section
         <div className="footer-section">
           <h3 className="footer-section-title">Contact Info</h3>
           <div className="contact-info">
@@ -59,7 +59,7 @@ const Footer = () => {
               <span>Laboni preview , crossing republik Ghaziabad</span>
             </div>
           </div>
-        </div>
+        </div> */}
         
         {/* Social Media Section */}
         <div className="footer-section">
