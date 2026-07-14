@@ -7,8 +7,9 @@ const bodyparser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const fs = require('fs');
+const dns = require('dns')
 require('dotenv').config();
-
+dns.setServers(["1.1.1.1","8.8.8.8"]);
 const app = express();
 
 // Middleware
@@ -16,6 +17,7 @@ app.use(bodyparser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // CORS configuration
+
 if (process.env.NODE_ENV !== "production") {
   app.use(cors({
     origin: process.env.CORS_ORIGIN,
@@ -53,6 +55,7 @@ const userschema = mongoose.Schema({
 });
 const userentry = mongoose.model('user', userschema);
 
+console.log(process.env.MONGO_URL); // add this temporarily
 const postentry = require('./modals/post');
 const upload = require('./utils/profile-picture');
 const { uploadOnCloudinary, deleteUploadOnCloudinary, uploadOnCloudinaryforpdf } =
