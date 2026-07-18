@@ -4,7 +4,7 @@
 // If not provided, it falls back to default values
 
 const config = {
-  API_BASE_URL: "http://localhost:5000" || "https://resource-sharing-5u87.onrender.com"||  "https://your-backend.onrender.com/api",
+  API_BASE_URL: "http://13.206.122.133:5000" ||"http://localhost:5000" || "https://resource-sharing-5u87.onrender.com"||  "https://your-backend.onrender.com/api",
   FILE_UPLOAD_URL:  "https://your-s3-bucket-url.amazonaws.com",
   APP_NAME: "Resource Sharing Platform",
   VERSION: "1.0.0"
